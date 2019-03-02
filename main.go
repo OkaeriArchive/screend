@@ -20,25 +20,10 @@ package main
 
 import (
 	"log"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 	"time"
 )
-
-func executeCommand(args ...string) (string, error) {
-
-	baseCmd := args[0]
-	cmdArgs := args[1:]
-
-	cmd := exec.Command(baseCmd, cmdArgs...)
-	out, err := cmd.Output()
-	if err != nil {
-		return string(out), err
-	}
-
-	return string(out), nil
-}
 
 func main() {
 
@@ -71,20 +56,21 @@ func main() {
 
 			command := daemon.Command
 			name := daemon.Name
+			user := daemon.User
 
-			screen, err := runScreen(name, command)
+			screen, err := runScreen(user, name, command)
 			if err != nil {
 				if err.Error() == "SCREEN_ALREADY_EXISTS" {
 					if firstRun {
-						log.Print("(", name, ") WARNING: skipped, screen already exists")
+						log.Print("(", name, " on ", user, ") WARNING: skipped, screen already exists")
 					}
 				} else {
-					log.Fatal("(", name, ") FAILED: ", command, " [", err, "]")
+					log.Fatal("(", name, " on ", user, ") FAILED: ", command, " [", err, "]")
 				}
 				continue
 			}
 
-			log.Print("(" + strconv.Itoa(screen.id) + ", " + screen.name + ") STARTED: " + command)
+			log.Print("("+strconv.Itoa(screen.id)+", "+screen.name, " on ", user, ") STARTED: "+command)
 		}
 
 		firstRun = false

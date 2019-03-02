@@ -24,6 +24,7 @@ import (
 
 type ScreenInfo struct {
 	Name string `ini:"name"`
+	User string `ini:"user"`
 }
 
 type ExecutionInfo struct {

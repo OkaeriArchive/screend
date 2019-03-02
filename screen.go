@@ -29,9 +29,9 @@ type Screen struct {
 	name string
 }
 
-func runScreen(screenName string, command string) (Screen, error) {
+func runScreen(userName string, screenName string, command string) (Screen, error) {
 
-	exists, err := doesScreenExists(screenName)
+	exists, err := doesScreenExists(userName, screenName)
 	if err != nil {
 		return Screen{}, err
 	}
@@ -43,7 +43,12 @@ func runScreen(screenName string, command string) (Screen, error) {
 	args := []string{"screen", "-dmS", screenName}
 	args = append(args, strings.Split(command, " ")...)
 
-	_, err = executeCommand(args...)
+	userInfo, err := getUserInfoByName(userName)
+	if err != nil {
+		return Screen{}, err
+	}
+
+	_, err = executeCommand(userInfo, args...)
 	if err != nil {
 		if err.Error() == "exit status 1" {
 			return Screen{}, errors.New("exit status 1: check command")
@@ -51,7 +56,7 @@ func runScreen(screenName string, command string) (Screen, error) {
 		return Screen{}, err
 	}
 
-	screen, err := getScreenByName(screenName)
+	screen, err := getScreenByName(userName, screenName)
 	if err != nil {
 		if err.Error() == "SCREEN_NOT_FOUND" {
 			return Screen{}, errors.New("Screen " + screenName + " not present after creation")
@@ -62,9 +67,14 @@ func runScreen(screenName string, command string) (Screen, error) {
 	return screen, nil
 }
 
-func getRunningScreens() ([]Screen, error) {
+func getRunningScreens(userName string) ([]Screen, error) {
 
-	output, err := executeCommand("screen", "-ls")
+	userInfo, err := getUserInfoByName(userName)
+	if err != nil {
+		return []Screen{}, err
+	}
+
+	output, err := executeCommand(userInfo, "screen", "-ls")
 	if err != nil {
 		if !strings.HasPrefix(output, "No Sockets found in") {
 			return []Screen{}, err
@@ -96,9 +106,9 @@ func getRunningScreens() ([]Screen, error) {
 	return screens, nil
 }
 
-func doesScreenExists(screenName string) (bool, error) {
+func doesScreenExists(userName string, screenName string) (bool, error) {
 
-	_, err := getScreenByName(screenName)
+	_, err := getScreenByName(userName, screenName)
 	if err != nil {
 		if err.Error() == "SCREEN_NOT_FOUND" {
 			return false, nil
@@ -109,9 +119,9 @@ func doesScreenExists(screenName string) (bool, error) {
 	return true, nil
 }
 
-func getScreenByName(screenName string) (Screen, error) {
+func getScreenByName(userName string, screenName string) (Screen, error) {
 
-	screens, err := getRunningScreens()
+	screens, err := getRunningScreens(userName)
 	if err != nil {
 		return Screen{}, err
 	}
