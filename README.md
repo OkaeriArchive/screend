@@ -18,6 +18,7 @@ Simple screen daemon written in Go.
 - `cd /root/screend`
 - `wget https://github.com/OkaeriPoland/screend/releases/latest/download/screend -O screend`
 - `chmod +x screend`
+- `/etc/init.d/screend restart`
 
 ## Removal
 - `update.rc screend remove`
