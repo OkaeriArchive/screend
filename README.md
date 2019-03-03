@@ -3,7 +3,7 @@ Simple screen daemon written in Go.
 
 ## Installation
 - `sudo su -`
-- `mkdir -p /root/screend && cd /root/screend`
+- `mkdir -p /root/screend /root/screend/daemons && cd /root/screend`
 - `wget https://github.com/OkaeriPoland/screend/releases/latest/download/screend`
 - `chmod +x screend`
 - `wget https://raw.githubusercontent.com/OkaeriPoland/screend/master/screend.sh`
