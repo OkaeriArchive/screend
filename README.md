@@ -1,7 +1,7 @@
-## ScreenD - Daemon with smaller daemons
+# ScreenD - Daemon with smaller daemons
 Simple screen daemon written in Go.
 
-### Installation
+## Installation
 - `sudo su -`
 - `cd /root`
 - `git clone https://github.com/OkaeriPoland/screend`
@@ -14,11 +14,11 @@ Simple screen daemon written in Go.
 - `update.rc screend defaults`
 - `/etc/init.d/screend start`
 
-### Removal
+## Removal
 - `update.rc screend remove`
 - `sudo rm -rf /root/screend /etc/init.d/screend`
 
-### Configuration
+## Configuration
 To add own screen to screend create new .ini file in `/root/screend/daemons`, then run `/etc/init.d/screend restart`
 
 ```ini
@@ -34,5 +34,5 @@ command = bash
 enabled = true
 ```
 
-### Protip
+## Protip
 As current installation method sucks, you can edit `screend.sh` and install screend in way you like. If you know what you are doing, of course.
