@@ -30,12 +30,13 @@ func getUserInfoByName(userName string) (UserInfo, error) {
 	return UserInfo{userName, gid, uid}, nil
 }
 
-func executeCommand(userInfo UserInfo, args ...string) (string, error) {
+func executeCommand(userInfo UserInfo, ignoreErrors bool, runDirectory string, args ...string) (string, error) {
 
 	baseCmd := args[0]
 	cmdArgs := args[1:]
 
 	cmd := exec.Command(baseCmd, cmdArgs...)
+	cmd.Dir = runDirectory
 	currentUser, _ := user.Current()
 	root := currentUser.Gid == "0"
 
@@ -43,13 +44,13 @@ func executeCommand(userInfo UserInfo, args ...string) (string, error) {
 		return "", errors.New("Screen daemon requires root privileges to switch between users")
 	}
 
-	if root {
+	if userInfo.name != currentUser.Username && root {
 		cmd.SysProcAttr = &syscall.SysProcAttr{}
 		cmd.SysProcAttr.Credential = &syscall.Credential{Uid: userInfo.uid, Gid: userInfo.gid}
 	}
 
 	out, err := cmd.Output()
-	if err != nil {
+	if err != nil && !ignoreErrors {
 		return string(out), err
 	}
 

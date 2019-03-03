@@ -22,6 +22,7 @@ import (
 	"github.com/pkg/errors"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Screen struct {
@@ -29,7 +30,7 @@ type Screen struct {
 	name string
 }
 
-func runScreen(userName string, screenName string, command string) (Screen, error) {
+func runScreen(userName string, screenName string, runDirectory string, command string) (Screen, error) {
 
 	exists, err := doesScreenExists(userName, screenName)
 	if err != nil {
@@ -40,7 +41,7 @@ func runScreen(userName string, screenName string, command string) (Screen, erro
 		return Screen{}, errors.New("SCREEN_ALREADY_EXISTS")
 	}
 
-	args := []string{"screen", "-dmS", screenName}
+	args := []string{"screen", "-S", screenName, "-dm"}
 	args = append(args, strings.Split(command, " ")...)
 
 	userInfo, err := getUserInfoByName(userName)
@@ -48,7 +49,7 @@ func runScreen(userName string, screenName string, command string) (Screen, erro
 		return Screen{}, err
 	}
 
-	_, err = executeCommand(userInfo, args...)
+	_, err = executeCommand(userInfo, false, runDirectory, args...)
 	if err != nil {
 		if err.Error() == "exit status 1" {
 			return Screen{}, errors.New("exit status 1: check command")
@@ -56,6 +57,7 @@ func runScreen(userName string, screenName string, command string) (Screen, erro
 		return Screen{}, err
 	}
 
+	time.Sleep(time.Second)
 	screen, err := getScreenByName(userName, screenName)
 	if err != nil {
 		if err.Error() == "SCREEN_NOT_FOUND" {
@@ -74,16 +76,10 @@ func getRunningScreens(userName string) ([]Screen, error) {
 		return []Screen{}, err
 	}
 
-	output, err := executeCommand(userInfo, "screen", "-ls")
-	if err != nil {
-		if !strings.HasPrefix(output, "No Sockets found in") {
-			return []Screen{}, err
-		}
-		return []Screen{}, nil
-	}
-
+	output, _ := executeCommand(userInfo, true, "", "screen", "-ls")
 	var screens []Screen
 	lines := strings.Split(output, "\n")
+
 	for _, line := range lines {
 
 		if !strings.HasPrefix(line, "\t") {

@@ -28,7 +28,8 @@ type ScreenInfo struct {
 }
 
 type ExecutionInfo struct {
-	Command string `ini:"command"`
+	Command      string `ini:"command"`
+	RunDirectory string `ini:"run_directory"`
 }
 
 type DaemonInfo struct {

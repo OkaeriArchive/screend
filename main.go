@@ -38,7 +38,7 @@ func main() {
 
 		cfg, err := loadDaemon(cfgPath)
 		if err != nil {
-			log.Fatal("Failed load ", cfgPath, err)
+			log.Print("Failed load ", cfgPath, err)
 			continue
 		}
 
@@ -55,17 +55,18 @@ func main() {
 			}
 
 			command := daemon.Command
+			runDirectory := daemon.RunDirectory
 			name := daemon.Name
 			user := daemon.User
 
-			screen, err := runScreen(user, name, command)
+			screen, err := runScreen(user, name, runDirectory, command)
 			if err != nil {
 				if err.Error() == "SCREEN_ALREADY_EXISTS" {
 					if firstRun {
 						log.Print("(", name, " on ", user, ") WARNING: skipped, screen already exists")
 					}
 				} else {
-					log.Fatal("(", name, " on ", user, ") FAILED: ", command, " [", err, "]")
+					log.Print("(", name, " on ", user, ") FAILED: ", command, " [", err, "]")
 				}
 				continue
 			}
