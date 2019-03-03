@@ -13,6 +13,12 @@ Simple screen daemon written in Go.
 - `update-rc.d screend defaults`
 - `/etc/init.d/screend start`
 
+## Updating
+- `sudo su -`
+- `cd /root/screend`
+- `wget https://github.com/OkaeriPoland/screend/releases/latest/download/screend -O screend`
+- `chmod +x screend`
+
 ## Removal
 - `update.rc screend remove`
 - `sudo rm -rf /root/screend /etc/init.d/screend`
