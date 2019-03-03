@@ -3,15 +3,14 @@ Simple screen daemon written in Go.
 
 ## Installation
 - `sudo su -`
-- `cd /root`
-- `git clone https://github.com/OkaeriPoland/screend`
-- `cd screend`
-- `go build -o screend`
+- `mkdir -p /root/screend && cd /root/screend`
+- `wget https://github.com/OkaeriPoland/screend/releases/latest/download/screend`
 - `chmod +x screend`
+- `wget https://raw.githubusercontent.com/OkaeriPoland/screend/master/screend.sh`
 - `mv screend.sh /etc/init.d/screend`
 - `chmod 755 /etc/init.d/screend`
 - `chown root:root /etc/init.d/screend`
-- `update.rc screend defaults`
+- `update-rc.d screend defaults`
 - `/etc/init.d/screend start`
 
 ## Removal
