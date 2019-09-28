@@ -21,7 +21,7 @@ Simple screen daemon written in Go.
 - `/etc/init.d/screend restart`
 
 ## Removal
-- `update.rc screend remove`
+- `update-rc.d screend remove`
 - `sudo rm -rf /root/screend /etc/init.d/screend`
 
 ## Configuration
