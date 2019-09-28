@@ -30,7 +30,7 @@ type Screen struct {
 	name string
 }
 
-func runScreen(userName string, screenName string, runDirectory string, command string) (Screen, error) {
+func runScreen(userName string, screenName string, runDirectory string, command string, logging bool) (Screen, error) {
 
 	exists, err := doesScreenExists(userName, screenName)
 	if err != nil {
@@ -41,7 +41,11 @@ func runScreen(userName string, screenName string, runDirectory string, command 
 		return Screen{}, errors.New("SCREEN_ALREADY_EXISTS")
 	}
 
-	args := []string{"screen", "-S", screenName, "-dm"}
+	args := []string{"screen"}
+	if logging {
+		args = append(args, "-L")
+	}
+	args = append(args, "-S", screenName, "-dm")
 	args = append(args, strings.Split(command, " ")...)
 
 	userInfo, err := getUserInfoByName(userName)

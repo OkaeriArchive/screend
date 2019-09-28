@@ -22,6 +22,7 @@ import (
 	"log"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -57,21 +58,36 @@ func main() {
 			command := daemon.Command
 			runDirectory := daemon.RunDirectory
 			name := daemon.Name
-			user := daemon.User
+			userName := daemon.User
+			logging := daemon.Logging
 
-			screen, err := runScreen(user, name, runDirectory, command)
+			screen, err := runScreen(userName, name, runDirectory, command, logging)
 			if err != nil {
 				if err.Error() == "SCREEN_ALREADY_EXISTS" {
 					if firstRun {
-						log.Print("(", name, " on ", user, ") WARNING: skipped, screen already exists")
+						log.Print("(", name, " on ", userName, ") WARNING: skipped, screen already exists")
 					}
 				} else {
-					log.Print("(", name, " on ", user, ") FAILED: ", command, " [", err, "]")
+					log.Print("(", name, " on ", userName, ") FAILED: ", command, " [", err, "]")
 				}
 				continue
 			}
 
-			log.Print("("+strconv.Itoa(screen.id)+", "+screen.name, " on ", user, ") STARTED: "+command)
+			log.Print("("+strconv.Itoa(screen.id)+", "+screen.name, " on ", userName, ") STARTED: "+command)
+
+			startHook := daemon.StartHook
+			if len(startHook) > 0 {
+
+				userInfo, err := getUserInfoByName(userName)
+				if err != nil {
+					log.Print("(", name, " on ", userName, ") START HOOK FAILED: cannot get user info")
+				}
+
+				output, err := executeCommand(userInfo, false, runDirectory, strings.Split(startHook, " ")...)
+				if err != nil {
+					log.Print("(", name, " on ", userName, ") START HOOK FAILED: ", output, " [", err, "]")
+				}
+			}
 		}
 
 		firstRun = false

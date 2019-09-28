@@ -35,9 +35,11 @@ user = example
 [Execution]
 run_directory = /home/example
 command = bash
+start_hook = "echo 'I will run after successful start, outside of the screen.' > /home/example/test.log"
 
 [Daemon]
 enabled = true
+logging = false
 ```
 
 ## Protip

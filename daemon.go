@@ -29,11 +29,13 @@ type ScreenInfo struct {
 
 type ExecutionInfo struct {
 	Command      string `ini:"command"`
+	StartHook    string `ini:"start_hook"`
 	RunDirectory string `ini:"run_directory"`
 }
 
 type DaemonInfo struct {
 	Enabled bool `ini:"enabled"`
+	Logging bool `ini:"logging"`
 }
 
 type DaemonConfig struct {
