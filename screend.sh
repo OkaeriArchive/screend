@@ -27,6 +27,9 @@ SCRIPTNAME=/etc/init.d/$NAME
 # and status_of_proc is working.
 . /lib/lsb/init-functions
 
+# Increase open files limit
+ulimit -n 515214
+
 # Make sure we have started with system locale
 if [ -r /etc/default/locale ]; then
         . /etc/default/locale
